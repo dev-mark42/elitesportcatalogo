@@ -4,9 +4,9 @@
 -- PASO 3: ejecuta este archivo. No contiene contraseñas ni claves privadas.
 with cuentas(email, nombre, rol) as (
   values
-    ('admin@tu-dominio.com', 'Administrador principal', 'admin'),
-    ('empleado@tu-dominio.com', 'Personal de catálogo', 'empleado'),
-    ('sistema@tu-dominio.com', 'Integración de pagos', 'sistema')
+    ('admin@elitesport.com', 'Administrador principal', 'admin'),
+    ('empleado@elitesport.com', 'Personal de catálogo', 'empleado'),
+    ('sistema@elitesport.com', 'Integración de pagos', 'sistema')
 )
 insert into public.perfiles (id, nombre, email, rol)
 select u.id, c.nombre, u.email, c.rol

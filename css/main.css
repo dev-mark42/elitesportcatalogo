@@ -285,3 +285,49 @@ body.animaciones-off .app-view {
 body.animaciones-on .bg-aurora {
     display: block;
 }
+
+/* Navegación compacta y composición adaptable */
+.app-view{scroll-margin-top:76px}
+@media(max-width:767.98px){
+  .app-view{padding-bottom:76px}
+  .sec-title{font-size:1.15rem}
+  .paginador{position:sticky;bottom:68px;z-index:4;background:var(--glass);backdrop-filter:blur(12px);padding:8px;border-radius:14px}
+  .modal-dialog{margin:.55rem}
+  .modal-content{border-radius:18px}
+  .modal-body{padding:1rem}
+  .admin-main{padding:12px!important}
+  .admin-sidebar{width:min(86vw,300px)}
+  .panel-topbar{gap:8px;padding:10px!important}
+  .table-responsive{font-size:.78rem}
+  .glass-card,.admin-card{padding:12px!important}
+  .btn,.form-control,.form-select{min-height:42px}
+}
+@media(min-width:768px){
+  .app-view{min-height:calc(100vh - 120px)}
+}
+@media(max-width:991.98px){
+  #pantalla-admin .web-header{height:58px!important;position:sticky;top:0;z-index:1020;background:var(--glass);backdrop-filter:blur(14px)}
+  #menuLateral{width:min(84vw,320px);max-width:320px}
+  #menuLateral .offcanvas-body{padding:12px}
+  #menuLateral .menu-item{padding:10px 12px;margin-bottom:4px;font-size:.92rem}
+  .admin-main{margin:0!important;padding:8px 0 84px!important}
+  .admin-main>.container-fluid{padding-left:10px!important;padding-right:10px!important}
+  .admin-main .row{--bs-gutter-x:.7rem;--bs-gutter-y:.7rem}
+  .admin-main .stat-card{padding:12px;gap:10px}
+  .admin-main .stat-card .ico{width:42px;height:42px;font-size:1.1rem}
+  .admin-main .stat-card .v{font-size:1.7rem}
+  .admin-main .sec-title{font-size:1.12rem;margin-bottom:12px}
+  .admin-main .glass-card{padding:12px!important}
+  #tablaPedidos{min-width:720px}
+}
+@media(max-width:767.98px){
+  .bg-stadium{animation:none;background-size:100% 100%,100% 100%,220px 100%,100% 100%}
+  .bg-pitch{opacity:.16;animation:none}
+  .bg-pitch .ln>*,.bg-pitch .pulso{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
+  .bg-beams,.bg-dust{display:none!important}
+  .bg-roll{opacity:.22}
+  .hero2{height:clamp(270px,72vw,390px);border-radius:18px}
+}
+@media(prefers-reduced-motion:reduce){.bg-stadium,.bg-pitch,.bg-roll{animation:none!important}}
+.menu-label{padding:14px 12px 6px;color:var(--muted);font-size:.66rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+@media(max-width:991.98px){.menu-label{padding:12px 12px 5px}}

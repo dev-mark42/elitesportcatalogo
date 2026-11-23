@@ -206,7 +206,7 @@
     <h3 class="p-precio fs-1 mb-1" id="zoomPrecio"></h3><div class="small mb-3" id="zoomStock"></div>
     <p class="t-m" id="zoomDesc"></p>
     <span class="t-m small d-block mb-2">Elige tu talla:</span><div class="mb-4" id="zoomTallas"></div>
-    <div class="mt-auto d-grid gap-2"><div class="d-flex gap-2"><button type="button" class="btn btn-neon btn-lg flex-grow-1" id="btnPagarQR"><i class="fa-solid fa-qrcode me-2"></i>Comprar con QR</button><button type="button" class="btn btn-ghost btn-lg" id="btnAgregar" aria-label="Agregar al carrito"><i class="fa-solid fa-cart-plus"></i></button></div><button type="button" class="btn btn-ghost" id="btnComprar" onclick="contactarWhatsApp()"><i class="fa-brands fa-whatsapp me-2"></i>Consultar por WhatsApp</button>
+    <div class="mt-auto d-grid gap-2"><div class="d-flex gap-2"><button type="button" class="btn btn-neon btn-lg flex-grow-1" id="btnPagarQR"><i class="fa-solid fa-bag-shopping me-2"></i>Comprar</button><button type="button" class="btn btn-ghost btn-lg" id="btnAgregar" aria-label="Agregar al carrito"><i class="fa-solid fa-cart-plus"></i></button></div><button type="button" class="btn btn-ghost" id="btnComprar" onclick="contactarWhatsApp()"><i class="fa-brands fa-whatsapp me-2"></i>Consultar por WhatsApp</button>
       <div class="d-flex gap-2"><button type="button" class="btn btn-outline-danger w-100" id="btnFavorito" aria-label="Añadir o quitar de favoritos"></button><button class="btn btn-ghost" onclick="compartir()" aria-label="Compartir"><i class="fa-solid fa-share-nodes"></i></button></div></div>
   </div></div></div>
 </div>
@@ -222,12 +222,15 @@
 <aside class="side d-none d-lg-flex" id="sideDesk" aria-label="Menú del panel"></aside>
 <div class="offcanvas offcanvas-start" tabindex="-1" id="menuLateral"><div class="offcanvas-header"><h5 class="brand js-marca">ELITE <span class="t-g">SPORT</span></h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button></div><div class="offcanvas-body" id="sideMov"></div></div>
 <template id="tplMenu">
+<div class="menu-label">NEGOCIO</div>
 <a href="#" class="menu-item" data-vista="ventas" data-roles="admin"><i class="fa-solid fa-chart-line"></i>Ventas</a>
 <a href="#" class="menu-item" data-vista="pedidos" data-roles="admin empleado"><i class="fa-solid fa-receipt"></i>Pedidos y pagos</a>
+<div class="menu-label">CATÁLOGO</div>
 <a href="#" class="menu-item" data-vista="inventario" data-roles="empleado"><i class="fa-solid fa-box"></i>Inventario</a>
 <a href="#" class="menu-item" data-vista="ligas" data-roles="empleado"><i class="fa-solid fa-flag"></i>Ligas</a>
 <a href="#" class="menu-item" data-vista="carrusel" data-roles="empleado"><i class="fa-solid fa-images"></i>Carrusel</a>
 <a href="#" class="menu-item" data-vista="estadisticas" data-roles="empleado"><i class="fa-solid fa-chart-pie"></i>Estadísticas</a>
+<div class="menu-label">ADMINISTRACIÓN</div>
 <a href="#" class="menu-item" data-vista="bitacora" data-roles="admin"><i class="fa-solid fa-clipboard-list"></i>Bitácora</a>
 <a href="#" class="menu-item" data-vista="usuarios" data-roles="admin"><i class="fa-solid fa-users"></i>Usuarios y roles</a>
 <a href="#" class="menu-item" data-vista="marca" data-roles="admin"><i class="fa-solid fa-palette"></i>Marca y tienda</a>
@@ -367,5 +370,5 @@
 </aside>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script type="module" src="js/main.js"></script>
-</body>
+<script type="module" src="js/core/acceso-avances.js"></script>\n</body>
 </html>

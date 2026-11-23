@@ -34,7 +34,7 @@ async function perfilDe(c, user) {
 export async function registrar({ nombre, email, tel, pass }) {
     email = email.trim().toLowerCase(); nombre = nombre.trim();
     const c = await sb(); if (!c) return SIN_BD;
-    const { data, error } = await c.auth.signUp({ email, password: pass, options: { data: { nombre, telefono: tel } } });
+    const { data, error } = await c.auth.signUp({ email, password: pass, options: { data: { nombre, telefono: tel }, emailRedirectTo: new URL('./confirmado.html', location.href).href } });
     if (error) return { ok: false, msg: traducir(error.message) };
     // Supabase no avisa si el correo ya existe: devuelve un usuario sin identidades
     if (data.user && data.user.identities && !data.user.identities.length) return { ok: false, msg: 'Ese correo ya está registrado' };
@@ -67,12 +67,33 @@ export async function loginAdmin(user, pass) {
     return { ok: true, rol: p.rol };
 }
 
-export const entrarInvitado = () => iniciar('cliente', { nombre: 'Invitado', email: '', invitado: true });
+export async function entrarInvitado() {
+    const c = await sb();
+    if (c) {
+        try {
+            const { data, error } = await c.auth.signInAnonymously({ options: { data: { nombre: 'Invitado', tipo: 'invitado' } } });
+            if (error) return { ok: false, msg: 'No se pudo iniciar como invitado. Activa Anonymous Sign-Ins en Supabase → Authentication → Providers. ' + traducir(error.message) };
+            const u = data.user;
+            return iniciar('cliente', { nombre: 'Invitado', email: '', invitado: true, uid: u?.id || null, online: true });
+        } catch (e) { return { ok: false, msg: 'No se pudo conectar para iniciar como invitado.' }; }
+    }
+    return iniciar('cliente', { nombre: 'Invitado', email: '', invitado: true, offline: true });
+}
 
 /** Al abrir la app: comprueba que la sesión guardada siga vigente en Supabase (y que el rol no haya cambiado). */
 export async function validarSesion() {
-    if (!getRol() || esInvitado()) return !!getRol();
-    const c = await sb(); if (!c) return true;   // sin internet: se conserva la sesión guardada
+    if (!getRol()) return false;
+    const c = await sb();
+    if (esInvitado()) {
+        if (!c) return true;
+        const { data: { session: guestSession } } = await c.auth.getSession();
+        if (guestSession) return true;
+        if (!navigator.onLine) return true;
+        const { data, error } = await c.auth.signInAnonymously({ options: { data: { nombre: 'Invitado', tipo: 'invitado' } } });
+        if (!error && data?.user) { localStorage.setItem(KU, JSON.stringify({ nombre:'Invitado', email:'', invitado:true, uid:data.user.id, online:true })); return true; }
+        return true;
+    }
+    if (!c) return true;
     const { data: { session } } = await c.auth.getSession();
     if (!session) { localStorage.removeItem(KR); localStorage.removeItem(KU); return false; }
     const p = await perfilDe(c, session.user);

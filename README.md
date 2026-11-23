@@ -95,3 +95,14 @@ Esta entrega incluye validación estática del código y mejoras del esquema, pe
 - Archivos declarados en la precaché del Service Worker: todos existen.
 
 Estas comprobaciones son estáticas. No equivalen a ejecutar `schema.sql` en tu proyecto Supabase ni a probar un pago bancario real; esos pasos requieren acceso al proyecto y una transferencia de prueba.
+
+## 11. Ajustes de esta versión
+
+- El modo invitado usa Supabase Anonymous Sign-Ins cuando hay conexión. En Supabase Dashboard → Authentication → Providers activa **Anonymous Sign-Ins**. El usuario invitado queda asociado a un UUID real, por lo que puede crear pedidos y consultar «Mis compras» desde ese mismo navegador. Si no hay internet, puede explorar el catálogo ya sincronizado, pero no crear pedidos hasta reconectarse.
+- En checkout primero se elige entrega y luego método. Efectivo y mixto se deshabilitan para envíos interdepartamentales. El pago mixto permite indicar el importe QR y calcula el saldo en efectivo; el administrador confirma el saldo restante.
+- QR y transferencia quedan pendientes hasta que el personal compruebe el abono real. Adjuntar una captura no confirma el pago.
+- La opción tarjeta registra una solicitud y abre WhatsApp para coordinar; no procesa ni cobra tarjetas porque no hay una pasarela conectada. Para cobrar tarjetas en línea se necesita contratar e integrar una pasarela compatible.
+- El índice de avances está en `avances.html`. Se abre con seis toques/clics en cualquier logo de Elite Sport (aviso) y un séptimo toque/clic.
+- La confirmación de correo redirige a `confirmado.html`. En Supabase → Authentication → URL Configuration agrega la URL HTTPS publicada de `confirmado.html` a **Redirect URLs**. En desarrollo agrega también la URL local exacta que uses.
+
+Antes de usar el nuevo checkout en una base ya existente, vuelve a ejecutar `supabase/schema.sql` para aplicar el método `tarjeta` y las restricciones actualizadas. Hazlo primero en un entorno de prueba y conserva una copia de seguridad.

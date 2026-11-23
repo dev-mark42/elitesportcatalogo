@@ -1,8 +1,11 @@
 // Service Worker de Elite Sport (un solo proyecto, raíz del repositorio; rutas relativas para GitHub Pages).
 // HTML y JS/CSS propios: red primero con respaldo en caché (siempre ves lo último y funciona offline).
 // Imágenes y recursos externos: caché primero.
-const V = 'elite-sport-v8';
+const V = 'elite-sport-v9';
 const SHELL = [
+  "avances.html",
+  "confirmado.html",
+  "js/core/acceso-avances.js",
  "assets/data/productos.json",
  "assets/img/icon-192.png",
  "assets/img/icon-512.png",

@@ -101,7 +101,11 @@ export default function iniciarLogin() {
         enviar(e.target, { ...rR, rPass2: coincide() }, () => registrar({ nombre: $('rNombre').value, email: $('rEmail').value, tel: $('rTel').value.trim(), pass: $('rPass').value }));
     });
     $('fAdmin').addEventListener('submit', e => { e.preventDefault(); enviar(e.target, rA, () => loginAdmin($('aUser').value, $('aPass').value)); });
-    $('btnInvitado').addEventListener('click', () => { entrarInvitado(); entrar('cliente'); });
+    $('btnInvitado').addEventListener('click', async () => {
+        const b = $('btnInvitado'); b.disabled = true;
+        try { const r = await entrarInvitado(); if (!r?.ok) { toast(r?.msg || 'No se pudo iniciar como invitado', 'error'); return; } entrar('cliente'); }
+        finally { b.disabled = false; }
+    });
     $('cont').remove();
 
     return {

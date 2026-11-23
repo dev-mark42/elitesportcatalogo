@@ -8,3 +8,13 @@ body.alto-contraste .glass-card, body.alto-contraste .p-card, body.alto-contrast
 body.alto-contraste a, body.alto-contraste .t-g, body.alto-contraste .t-m { color: #ffe600 !important; }
 body.alto-contraste .btn-neon, body.alto-contraste .lg-cta { background: #ffe600 !important; color: #000 !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+
+/* Alto contraste: texto legible tanto en tema claro como oscuro */
+body.alto-contraste,body.alto-contraste[data-bs-theme="light"]{background:#000!important;color:#fff!important;color-scheme:dark}
+body.alto-contraste :is(p,span,small,label,h1,h2,h3,h4,h5,h6,li,td,th,.form-label,.t-m,.t-x){color:#fff!important}
+body.alto-contraste :is(input,textarea,select,.form-control,.form-select,.form-check-input){background:#050505!important;color:#fff!important;border:2px solid #ffe600!important;caret-color:#ffe600}
+body.alto-contraste :is(input,textarea,select)::placeholder{color:#ddd!important;opacity:1}
+body.alto-contraste :is(.modal-content,.offcanvas,.dropdown-menu,.popover,.glass-card,.p-card,.cat-card){background:#050505!important;color:#fff!important;border:2px solid #ffe600!important}
+body.alto-contraste :is(a,.t-g,.t-m){color:#ffe600!important}
+body.alto-contraste :is(.btn-neon,.lg-cta){background:#ffe600!important;color:#000!important}
+body.alto-contraste :is(.btn-ghost,.btn-outline-secondary){background:#111!important;color:#fff!important;border:2px solid #ffe600!important}

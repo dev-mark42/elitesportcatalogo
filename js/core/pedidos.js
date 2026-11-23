@@ -39,22 +39,26 @@ export function detalleCarrito() {
 }
 
 /* ---------- Pedidos ---------- */
-export async function crearPedido({ lineas, total, nombre, telefono, notas }) {
+export async function crearPedido({ lineas, total, nombre, telefono, notas, metodo = 'qr', entregaTipo = 'local', departamento = '', montoQrManual = 0 }) {
     const c = await sb(); if (!c) return { ok: false, msg: 'Sin conexión con la base de datos' };
     const { data: { session } } = await c.auth.getSession();
-    if (!session) return { ok: false, msg: 'Inicia sesión para pagar' };
+    if (!session) return { ok: false, msg: 'No se pudo iniciar la sesión de compra. Vuelve a entrar como invitado.' };
+    if (entregaTipo === 'departamento' && ['efectivo','mixto'].includes(metodo)) return { ok:false, msg:'Para envíos fuera de La Paz debes pagar por QR o tarjeta.' };
     const items = lineas.map(l => ({ id: l.p.id, titulo: l.p.titulo, talla: l.talla, cant: l.cant, precio: precioDe(l.p), imagen: l.p.imagen || '' }));
-    const { pago } = getAjustes();
-    try { await c.rpc('expirar_pedidos'); } catch { /* opcional */ }
-    for (let intento = 0; intento < 12; intento++) {
-        // monto único = total + centavos (cada pedido pendiente tiene un monto distinto para conciliar el pago automáticamente)
-        const extra = (pago.centavos || intento > 0) ? (1 + Math.floor(Math.random() * 99)) / 100 : 0;
-        const fila = { usuario_id: session.user.id, cliente_nombre: nombre, cliente_email: session.user.email, telefono, notas, items, total, monto_unico: r2(total + extra), estado: 'pendiente_pago', metodo: 'qr' };
-        const { data, error } = await c.from('pedidos').insert(fila).select().single();
-        if (!error) { registrarEvento('pedido_creado', `Pedido #${data.id} · Bs ${fila.monto_unico}`); return { ok: true, pedido: data }; }
-        if (error.code !== '23505') return { ok: false, msg: 'No se pudo crear el pedido: ' + error.message };
-    }
-    return { ok: false, msg: 'Hay muchos pedidos pendientes. Intenta de nuevo en un minuto.' };
+    const montoQr = metodo === 'qr' ? r2(total + (1 + Math.floor(Math.random() * 99)) / 100) : metodo === 'mixto' ? r2(montoQrManual) : 0;
+    const montoEfectivo = metodo === 'efectivo' ? r2(total) : metodo === 'mixto' ? r2(total - montoQr) : 0;
+    if (metodo === 'mixto' && (entregaTipo !== 'local' || montoQr <= 0 || montoEfectivo <= 0)) return { ok:false, msg:'El pago mixto requiere una parte QR y otra en efectivo, solo para entrega local.' };
+    const fila = {
+        usuario_id: session.user.id, cliente_nombre: nombre, cliente_email: session.user.email || '',
+        telefono, notas, items, total, monto_qr: montoQr, monto_efectivo: montoEfectivo,
+        monto_unico: ['qr','mixto'].includes(metodo) ? montoQr : null,
+        estado: 'pendiente_pago', metodo, entrega_tipo: entregaTipo,
+        departamento: entregaTipo === 'departamento' ? departamento : null
+    };
+    const { data, error } = await c.from('pedidos').insert(fila).select().single();
+    if (error) return { ok: false, msg: 'No se pudo crear el pedido: ' + error.message };
+    registrarEvento('pedido_creado', `Pedido #${data.id} · ${metodo}`);
+    return { ok: true, pedido: data };
 }
 
 export async function obtenerPedido(id) {

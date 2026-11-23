@@ -72,7 +72,7 @@ create table if not exists public.pedidos (
   comprobante text, referencia text, pago_id bigint, confirmado_por text,
   creado timestamptz not null default now(), pagado_en timestamptz,
   constraint pedidos_estado_check check (estado in ('pendiente_pago','pago_parcial','coordinacion','pagado','enviado','entregado','cancelado')),
-  constraint pedidos_metodo_check check (metodo in ('qr','efectivo','mixto','whatsapp')),
+  constraint pedidos_metodo_check check (metodo in ('qr','efectivo','mixto','tarjeta','whatsapp')),
   constraint pedidos_montos_check check (total >= 0 and monto_qr >= 0 and monto_efectivo >= 0),
   constraint pedidos_entrega_check check (entrega_tipo in ('local','departamento')),
   constraint pedidos_envio_pago_check check (not (entrega_tipo = 'departamento' and metodo in ('efectivo','mixto')))
@@ -86,7 +86,7 @@ alter table public.pedidos add column if not exists stock_reservado boolean not 
 alter table public.pedidos drop constraint if exists pedidos_estado_check;
 alter table public.pedidos add constraint pedidos_estado_check check (estado in ('pendiente_pago','pago_parcial','coordinacion','pagado','enviado','entregado','cancelado'));
 alter table public.pedidos drop constraint if exists pedidos_metodo_check;
-alter table public.pedidos add constraint pedidos_metodo_check check (metodo in ('qr','efectivo','mixto','whatsapp'));
+alter table public.pedidos add constraint pedidos_metodo_check check (metodo in ('qr','efectivo','mixto','tarjeta','whatsapp'));
 alter table public.pedidos drop constraint if exists pedidos_montos_check;
 alter table public.pedidos add constraint pedidos_montos_check check (total >= 0 and monto_qr >= 0 and monto_efectivo >= 0);
 alter table public.pedidos drop constraint if exists pedidos_entrega_check;
@@ -184,6 +184,8 @@ begin
     if new.entrega_tipo <> 'local' or new.monto_qr <> 0 or new.monto_efectivo <> total_calc then
       raise exception 'El pago en efectivo solo se permite para entrega local';
     end if;
+  elsif new.metodo = 'tarjeta' then
+    if new.monto_qr <> 0 or new.monto_efectivo <> 0 then raise exception 'El pago con tarjeta se confirma desde el panel'; end if;
   elsif new.metodo = 'whatsapp' then
     if new.monto_qr <> 0 or new.monto_efectivo <> 0 then raise exception 'La coordinación no registra cobro'; end if;
   else
@@ -392,3 +394,8 @@ begin
 exception when others then
   raise notice 'Activa pg_cron y programa public.expirar_pedidos() cada minuto desde Supabase Cron.';
 end $$;
+
+-- Compatibilidad para métodos nuevos en instalaciones ya existentes.
+alter table public.pedidos drop constraint if exists pedidos_metodo_check;
+alter table public.pedidos add constraint pedidos_metodo_check
+  check (metodo in ('qr','efectivo','mixto','tarjeta','whatsapp'));

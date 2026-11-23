@@ -120,6 +120,7 @@ function carrusel() {
 /* =================== PEDIDOS (empleado y admin) =================== */
 const ACCIONES = {
     pendiente_pago: p => `<button type="button" class="btn btn-neon btn-sm js-confirmar" title="Confirmar que recibí el pago"><i class="fa-solid fa-check"></i> Confirmar pago</button><button type="button" class="btn btn-outline-danger btn-sm js-cancelar" aria-label="Cancelar pedido"><i class="fa-solid fa-xmark"></i></button>`,
+    pago_parcial: () => '<button type="button" class="btn btn-neon btn-sm js-confirmar" title="Confirmar saldo en efectivo"><i class="fa-solid fa-check"></i> Confirmar saldo</button>',
     pagado: () => '<button type="button" class="btn btn-ghost btn-sm js-enviar"><i class="fa-solid fa-truck"></i> Marcar enviado</button>',
     enviado: () => '<button type="button" class="btn btn-ghost btn-sm js-entregar"><i class="fa-solid fa-box-open"></i> Marcar entregado</button>'
 };
@@ -355,7 +356,7 @@ export default async function iniciarAdmin() {
     const idDe = t => +t.closest('[data-id]').dataset.id;
     deleg('#tablaPedidos', '.js-confirmar', 'click', async (e, t) => {
         const id = idDe(t), p = pedDatos.find(x => x.id === id);
-        if (await confirmar(`¿Recibiste el pago de ${fmtBs(p.monto_unico)} del pedido #${id}? Se descontará el stock.`, { titulo: 'Confirmar pago', icono: '', ok: 'Sí, confirmar' }))
+        if (await confirmar(`¿Confirmas que recibiste el pago pendiente del pedido #${id}? QR: ${fmtBs(p.monto_qr || p.monto_unico || 0)} · Efectivo restante: ${fmtBs(p.monto_efectivo || 0)}.`, { titulo: 'Confirmar pago', icono: '', ok: 'Sí, confirmar' }))
             cambiarEstado(id, { estado: 'pagado', pagado_en: new Date().toISOString(), confirmado_por: `manual (${getUsuario().email})` }, 'pago_confirmado_manual', 'Pago confirmado');
     });
     deleg('#tablaPedidos', '.js-enviar', 'click', (e, t) => cambiarEstado(idDe(t), { estado: 'enviado' }, 'pedido_enviado', 'Pedido marcado como enviado'));
