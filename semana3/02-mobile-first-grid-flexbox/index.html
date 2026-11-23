@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile-first, Grid y Flexbox + PWA | Elite Sport</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="../../css/main.css"><link rel="stylesheet" href="../../css/spa.css"><link rel="stylesheet" href="../04-accesibilidad-contraste/accesibilidad.css" onerror="this.remove()">
+<style>.contenedor-app{display:flex;flex-direction:column;min-height:260px}.area-contenido{flex:1;padding:12px}.dock-acciones{display:flex;justify-content:space-around;padding:10px;background:#0f294a;border-radius:12px}.dock-acciones button{color:#fff;background:none;border:0;padding:8px 12px}
+@media (min-width:768px),(orientation:landscape){.contenedor-app{flex-direction:row}.dock-acciones{order:-1;flex-direction:column;justify-content:flex-start;gap:12px;width:140px}}</style>
+</head>
+<body style="padding:24px 0">
+<main class="container" style="max-width:820px" id="contenido-principal">
+<header class="mb-4"><h1 class="display-font">Mobile-first, Grid y Flexbox + PWA</h1><p class="t-m">Un solo HTML: el dock va abajo en celular vertical y a la izquierda en horizontal o PC. Detecta el dispositivo.</p><p class="small"><a href="../../index.html">← Volver al proyecto principal</a> · Este avance funciona solo y también está integrado en el proyecto.</p></header>
+<section class="glass-card p-4">
+<p>Dispositivo detectado: <b id="d">…</b></p>
+<div class="contenedor-app"><section class="area-contenido"><p>Cambia el tamaño de la ventana o gira el celular.</p></section>
+<nav class="dock-acciones" aria-label="Menú principal"><button type="button">Inicio</button><button type="button">Catálogo</button><button type="button">Perfil</button></nav></div>
+<button type="button" id="btnInstalarPWA" class="btn btn-neon mt-3" hidden>Instalar App</button>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script type="module">
+import { iniciarDispositivo } from './dispositivo.js';
+iniciarDispositivo();
+const d = document.getElementById('d'), h = document.documentElement, p = () => { d.textContent = h.dataset.dispositivo + ' · ' + h.dataset.orientacion + (h.dataset.tactil === 'true' ? ' · táctil' : ''); };
+p(); addEventListener('resize', () => setTimeout(p, 150));
+let ev; const b = document.getElementById('btnInstalarPWA');
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); ev = e; b.hidden = false; });
+b.onclick = async () => { if (!ev) return; ev.prompt(); await ev.userChoice; b.hidden = true; };
+</script>
+</body>
+</html>

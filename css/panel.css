@@ -1,0 +1,72 @@
+/* Panel por roles, galería de fotos, carrito, pagos QR y modo ligero */
+.zm-left{display:flex;flex-direction:column;background:#000;min-width:0}
+.zm-left .zm-img{flex:1 1 auto}
+.zm-caption{margin:0;padding:8px 14px;font-size:.84rem;color:#d7ffe6;background:#04120a;min-height:38px;display:flex;align-items:center}
+.zm-caption:empty{display:none}
+.zm-thumbs{display:flex;gap:8px;padding:8px 12px 12px;overflow-x:auto;background:#04120a}
+.zm-thumbs:empty{display:none}
+.zm-thumb{flex:0 0 60px;height:60px;border-radius:10px;overflow:hidden;border:2px solid transparent;padding:0;background:#000;opacity:.65;transition:.2s}
+.zm-thumb.on{border-color:var(--g);opacity:1}
+.zm-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.p-fotos{position:absolute;left:10px;bottom:10px;z-index:3;background:rgba(0,0,0,.7);color:#fff;border-radius:20px;padding:3px 10px;font-size:.72rem}
+
+/* galería del formulario de producto */
+.gal-form{display:flex;flex-direction:column;gap:10px}
+.gal-item{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:start;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:10px}
+.gal-item.sube{opacity:.6}
+.gal-thumb{width:64px;height:64px;border-radius:10px;overflow:hidden;background:#04361a;display:grid;place-items:center;color:var(--muted);font-size:.7rem;text-align:center}
+.gal-thumb img{width:100%;height:100%;object-fit:cover}
+.gal-item .form-control{font-size:.82rem;padding:.4rem .6rem}
+.gal-acc{display:flex;flex-direction:column;gap:4px}
+.gal-acc button{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--txt);font-size:.8rem}
+.gal-acc button:disabled{opacity:.3}
+.gal-principal{font-size:.65rem;color:var(--gtxt);font-weight:700}
+
+/* tablas del panel */
+.tabla-panel{--bs-table-bg:transparent;font-size:.88rem}
+.tabla-panel td,.tabla-panel th{vertical-align:middle}
+.est{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;white-space:nowrap}
+.est-pendiente_pago{background:#ff9f1c33;color:#ffb347}.est-pagado{background:#00ff6626;color:var(--gtxt)}
+.est-enviado{background:#4cc9f033;color:#4cc9f0}.est-entregado{background:#9be56433;color:#9be564}.est-cancelado{background:#ef233c33;color:#ff6b7d}
+.acc-btns{display:flex;gap:6px;flex-wrap:wrap}
+.comp-mini{width:38px;height:38px;border-radius:8px;object-fit:cover;border:1px solid var(--border)}
+.chart-dias{display:flex;align-items:flex-end;gap:6px;height:190px}
+.chart-dias .col-d{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:0}
+.chart-dias .col-d i{display:block;width:100%;background:linear-gradient(var(--g),#00a844);border-radius:6px 6px 0 0;min-height:2px;transition:height .6s}
+.chart-dias .col-d small{font-size:.62rem;color:var(--muted);margin-top:4px;white-space:nowrap}
+.chart-dias .col-d b{font-size:.62rem}
+
+/* avances */
+.av-sem{margin-bottom:26px}.av-sem h5{font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+.av-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.av-card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px;transition:.2s}
+.av-card:hover{border-color:var(--g);transform:translateY(-2px);color:inherit}
+.av-card b{display:block}.av-card small{color:var(--muted)}.av-card code{font-size:.68rem;color:var(--gtxt);word-break:break-all}
+
+/* carrito */
+.cart-l{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.cart-l img{width:64px;height:64px;border-radius:12px;object-fit:cover;background:#04361a}
+.cart-l .qty{display:inline-flex;align-items:center;gap:8px;margin-top:4px}
+.cart-l .qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--txt)}
+.cart-vacio{text-align:center;color:var(--muted);padding:40px 0}
+
+/* pago */
+.pg-qr{width:min(260px,100%);aspect-ratio:1;object-fit:contain;background:#fff;border-radius:16px;padding:10px;display:block;margin:0 auto}
+.pg-monto{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:var(--gtxt);line-height:1}
+.pg-estado{display:flex;align-items:center;gap:10px;justify-content:center;padding:10px;border-radius:12px;background:var(--card2);font-weight:600}
+.pg-spin{width:16px;height:16px;border:3px solid var(--border);border-top-color:var(--g);border-radius:50%;animation:giro 1s linear infinite}
+@keyframes giro{to{transform:rotate(360deg)}}
+.pg-ok{text-align:center}.pg-ok .check{width:86px;height:86px;border-radius:50%;background:var(--g);color:var(--btn-txt);display:grid;place-items:center;font-size:2.4rem;margin:0 auto 14px;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(0)}}
+.ped-card{border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px}
+
+/* ===== Modo ligero: celular sin trabas (se activa solo en celular/tablet; se puede apagar en el botón de accesibilidad) ===== */
+body.ligero .bg-pitch,body.ligero .bg-beams,body.ligero .bg-dust,body.ligero .bg-roll,body.ligero .bg-vignette{display:none!important}
+body.ligero .bg-stadium{animation:none!important}
+body.ligero .reveal{opacity:1!important;transform:none!important;transition:none!important}
+body.ligero .glass-card,body.ligero .p-card,body.ligero .cat-card,body.ligero .web-header,body.ligero .app-header,body.ligero .bottom-nav,body.ligero .zm,body.ligero .modal-backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body.ligero .tilt,body.ligero .scroll-bar{transform:none!important}
+body.ligero .scroll-bar{display:none}
+body.ligero *,body.ligero *::before,body.ligero *::after{animation-duration:.25s!important}
+body.ligero .hero2 *{animation:none!important}
+@media (max-width:991.98px){.gal-item{grid-template-columns:56px 1fr auto}.tabla-panel{font-size:.8rem}}

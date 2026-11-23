@@ -1,0 +1,16 @@
+/* Pantallas del index único + panel de accesibilidad/calidad */
+.pantalla[hidden] { display: none !important; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.calidad { position: fixed; left: 14px; bottom: calc(80px + env(safe-area-inset-bottom)); z-index: 1060; }
+@media (min-width: 992px) { .calidad { bottom: 18px; } }
+.calidad__fab { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--border); background: var(--glass); color: var(--gtxt); backdrop-filter: blur(14px); font-size: 1.25rem; box-shadow: var(--sombra); }
+.calidad__panel { position: absolute; left: 0; bottom: 56px; width: min(330px, calc(100vw - 28px)); background: var(--solid); border: 1px solid var(--border); border-radius: 16px; padding: 14px; box-shadow: var(--sombra); }
+.calidad__panel[hidden] { display: none; }
+.calidad__titulo { font-size: 1rem; font-weight: 700; margin: 0 0 10px; }
+.calidad__salida { font-size: .78rem; color: var(--muted); margin: 8px 0 12px; }
+.calidad__cwv { display: flex; gap: 6px; margin: 0 0 8px; }
+.calidad__cwv div { flex: 1; background: var(--card2); border-radius: 10px; padding: 6px; text-align: center; }
+.calidad__cwv dt { font-size: .68rem; color: var(--muted); }
+.calidad__cwv dd { margin: 0; font-weight: 700; font-size: .72rem; }
+.paginador[hidden] { display: none !important; }
+main:focus { outline: none; }
