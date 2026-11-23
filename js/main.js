@@ -29,10 +29,9 @@ function destino() {
     return { pant: 'tienda', vista: p === 'tienda' ? v : '' };
 }
 
-/** Quita modales, fondos oscuros y bloqueos de scroll que hayan quedado abiertos (p. ej. al cerrar sesión desde el modal de perfil). */
 function liberarPantalla() {
-    document.querySelectorAll('.modal.show').forEach(el => { try { bootstrap.Modal.getInstance(el)?.dispose(); } catch { /* ya cerrado */ } el.classList.remove('show'); el.style.display = 'none'; el.removeAttribute('aria-modal'); });
-    document.querySelectorAll('.offcanvas.show').forEach(el => { try { bootstrap.Offcanvas.getInstance(el)?.dispose(); } catch { /* ya cerrado */ } el.classList.remove('show'); });
+    document.querySelectorAll('.modal.show').forEach(el => { try { bootstrap.Modal.getInstance(el)?.dispose(); } catch { } el.classList.remove('show'); el.style.display = 'none'; el.removeAttribute('aria-modal'); });
+    document.querySelectorAll('.offcanvas.show').forEach(el => { try { bootstrap.Offcanvas.getInstance(el)?.dispose(); } catch { } el.classList.remove('show'); });
     document.querySelectorAll('.modal-backdrop, .offcanvas-backdrop, .wipe').forEach(el => el.remove());
     document.querySelector('#modalZoom')?.classList.remove('on');
     document.body.classList.remove('modal-open', 'no-scroll');
@@ -60,16 +59,46 @@ async function mostrar() {
     finally { ocupado = false; }
 }
 
+// ==========================================
+// CONTROL DE ANIMACIONES (Por defecto APAGADAS)
+// ==========================================
+function iniciarControlAnimaciones() {
+    // Por defecto: apagadas en celular/tablet, encendidas en laptop
+    const esLaptop = document.documentElement.dataset.dispositivo === 'laptop';
+    const guardado = localStorage.getItem('eliteAnimaciones');
+    const activadas = guardado === null ? esLaptop : guardado === '1';
+
+    document.body.classList.toggle('animaciones-on', activadas);
+    document.body.classList.toggle('animaciones-off', !activadas);
+
+    const btn = $('btnAnimaciones');
+    if (btn) {
+        const pintar = () => {
+            const on = document.body.classList.contains('animaciones-on');
+            btn.setAttribute('aria-pressed', String(on));
+            btn.textContent = on ? '✨ Animaciones: ON' : '🔇 Animaciones: OFF';
+        };
+        pintar();
+
+        btn.addEventListener('click', () => {
+            const on = !document.body.classList.contains('animaciones-on');
+            document.body.classList.toggle('animaciones-on', on);
+            document.body.classList.toggle('animaciones-off', !on);
+            localStorage.setItem('eliteAnimaciones', on ? '1' : '0');
+            pintar();
+            toast(on ? 'Animaciones encendidas ✨' : 'Animaciones apagadas 🔇', 'info');
+        });
+    }
+}
+
 function iniciarCalidad() {
     const fab = $('btnCalidad'), panel = $('panelCalidad');
     fab.addEventListener('click', () => { const abrir = panel.hidden; panel.hidden = !abrir; fab.setAttribute('aria-expanded', String(abrir)); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.hidden) { panel.hidden = true; fab.setAttribute('aria-expanded', 'false'); fab.focus(); } });
     iniciarAltoContraste($('btnSimularContraste'));
-    const lig = $('btnLigero'), pintarLig = () => { const on = document.body.classList.contains('ligero'); lig.setAttribute('aria-pressed', String(on)); lig.textContent = on ? 'Modo ligero: ACTIVADO' : 'Modo ligero: desactivado'; };
-    lig.addEventListener('click', () => { const on = !document.body.classList.contains('ligero'); document.body.classList.toggle('ligero', on); localStorage.setItem('eliteLigero', on ? '1' : '0'); pintarLig(); });
-    pintarLig();
     activarAuditoria($('btnAuditarA11Y'), $('reporteA11Y'));
     activarSmokeTest($('btnSmokeTest'), $('salidaAudit'));
+
     const disp = () => { $('infoDispositivo').textContent = `${document.documentElement.dataset.dispositivo} (${document.documentElement.dataset.orientacion})`; };
     disp(); document.addEventListener('dispositivo:cambio', disp); addEventListener('orientationchange', () => setTimeout(disp, 200));
     medirCWV(m => {
@@ -81,23 +110,31 @@ function iniciarCalidad() {
 
 async function arrancar() {
     iniciarDispositivo();
-    // Modo ligero: en celular/tablet se apagan los efectos pesados (se puede cambiar en el botón de accesibilidad)
-    const pref = localStorage.getItem('eliteLigero');
-    document.body.classList.toggle('ligero', pref === null ? document.documentElement.dataset.dispositivo !== 'laptop' : pref === '1');
+
+    // Control de animaciones (por defecto apagadas en celular/tablet, encendidas en laptop)
+    iniciarControlAnimaciones();
+
     window.logout = () => { liberarPantalla(); return logout(); };
     sincronizarLigas();
-    inicializarTema(); inicializarAnimaciones(); registrarPWA(); iniciarCalidad();
+    inicializarTema();
+    inicializarAnimaciones();
+    registrarPWA();
+    iniciarCalidad();
+
     let ultimoAviso = 0;
     document.addEventListener('bd:error', e => { if (Date.now() - ultimoAviso > 4000) { ultimoAviso = Date.now(); toast(e.detail, 'warn'); } });
-    // Accesibilidad por teclado: Enter / Espacio activan los elementos con role="button"
+
+    // Accesibilidad por teclado
     document.addEventListener('keydown', e => {
         const el = e.target.closest?.('[role="button"]');
         if (el && (e.key === 'Enter' || e.key === ' ') && !e.target.matches('input,textarea,select,button,a')) { e.preventDefault(); el.click(); }
     });
+
     aplicarMarca();
     await sb().then(() => { $('infoBD').textContent = bdActiva() ? 'Supabase' : 'sin conexión'; });
-    await cargarAjustes().catch(() => {});
+    await cargarAjustes().catch(() => { });
     await validarSesion();
+
     addEventListener('hashchange', mostrar);
     document.addEventListener('auth:cambio', () => { actual = null; history.replaceState(null, '', location.pathname + location.search); mostrar(); });
     await mostrar();

@@ -237,3 +237,51 @@ i.liga-ico{display:inline-flex;align-items:center;justify-content:center;color:v
  .zm-box{grid-template-columns:1fr 1fr;max-height:96dvh}.zm-img{aspect-ratio:auto;min-height:260px}.zm-info{min-height:0;padding:18px}
  .side{padding-top:76px}
 }
+/* ==========================================
+   CONTROL DE ANIMACIONES (Por defecto apagadas)
+   ========================================== */
+
+/* Clase para APAGAR animaciones (por defecto en body) */
+body.animaciones-off .bg-aurora,
+body.animaciones-off .bg-stadium,
+body.animaciones-off .bg-pitch,
+body.animaciones-off .bg-beams,
+body.animaciones-off .bg-dust,
+body.animaciones-off .bg-roll,
+body.animaciones-off .hero2,
+body.animaciones-off .marquee {
+    display: none !important;
+}
+
+body.animaciones-off .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+}
+
+body.animaciones-off .p-card,
+body.animaciones-off .glass-card,
+body.animaciones-off .btn,
+body.animaciones-off .cat-card {
+    transition: none !important;
+    animation: none !important;
+}
+
+body.animaciones-off .vinyl-disc,
+body.animaciones-off .vinyl-cover,
+body.animaciones-off .eq i {
+    animation: none !important;
+}
+
+body.animaciones-off .spinner-border {
+    animation-duration: 0.8s !important;
+}
+
+body.animaciones-off .app-view {
+    animation: none !important;
+}
+
+/* Clase para ENCENDER animaciones */
+body.animaciones-on .bg-aurora {
+    display: block;
+}
