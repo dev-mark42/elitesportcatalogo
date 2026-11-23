@@ -7,7 +7,7 @@ export const ADMIN_EMAIL_DOMINIO = '@elitesport.com';   // "admin" se completa a
 
 /* ---------- Supabase (la app funciona SOLO con base de datos) ----------
    Project Settings → API: Project URL y publishable/anon key (son públicas; la seguridad la dan las políticas RLS). */
-export const SUPABASE_URL = 'https://mogyzqznpcpwsuzcujyj.supabase.co';
+export const SUPABASE_URL = 'https://mogyzqznpcpwsuzcujyj.supabase.co/rest/v1/';
 export const SUPABASE_KEY = 'sb_publishable_3WMaNpvU3F-DJCB4yDEvBA_XVpH88qr';
 export function credencialesBD() {
     let o = {};
