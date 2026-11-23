@@ -1,0 +1,10 @@
+/* Avance (Semana 3 · a11y): foco visible, enlace de salto y modo de alto contraste */
+:focus-visible { outline: 3px solid #0d9488; outline-offset: 2px; }
+.skip-link { position: fixed; left: 12px; top: -60px; z-index: 10000; background: #fff; color: #000; padding: 10px 16px; border-radius: 8px; font-weight: 700; transition: top .2s; }
+.skip-link:focus { top: 12px; }
+body.alto-contraste { background: #000 !important; color: #fff !important; --fondo: #000; --txt: #fff; --muted: #e5e5e5; --border: #facc15; --card: #0a0a0a; --glass: #000; --g: #ffe600; --gtxt: #ffe600; --btn-txt: #000; }
+body.alto-contraste .bg-stadium, body.alto-contraste .bg-pitch, body.alto-contraste .bg-beams, body.alto-contraste .bg-dust, body.alto-contraste .bg-roll, body.alto-contraste .bg-vignette { display: none; }
+body.alto-contraste .glass-card, body.alto-contraste .p-card, body.alto-contraste .cat-card, body.alto-contraste .modal-content, body.alto-contraste .zm-box { border: 2px solid #facc15 !important; background: #0a0a0a !important; }
+body.alto-contraste a, body.alto-contraste .t-g, body.alto-contraste .t-m { color: #ffe600 !important; }
+body.alto-contraste .btn-neon, body.alto-contraste .lg-cta { background: #ffe600 !important; color: #000 !important; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }

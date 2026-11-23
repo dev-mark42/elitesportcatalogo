@@ -17,6 +17,8 @@
 <script>/* tema antes de pintar: evita el parpadeo */try{if(localStorage.getItem('eliteTema')==='claro'){document.documentElement.setAttribute('data-bs-theme','light');document.documentElement.classList.add('pre-claro')}}catch(e){}</script>
 </head>
 <body>
+<div id="offlineNotice" class="offline-notice" role="status" aria-live="polite" hidden></div>
+<div id="avancesOcultos" class="avances-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="avancesTitulo"><div class="avances-panel"><button type="button" id="cerrarAvances" class="avances-close" aria-label="Cerrar">×</button><p class="eyebrow">ELITE SPORT · DESARROLLO</p><h2 id="avancesTitulo">Avances del proyecto</h2><p class="t-m">Semanas 1, 2 y 3. Estos enlaces aparecen solo después de completar el patrón de acceso.</p><div id="avancesLinks" class="avances-links"></div></div></div>
 <a class="skip-link" href="#contenido-principal">Saltar al contenido</a>
 <div id="pantalla-login" class="pantalla login-body" hidden>
 <button type="button" class="btn btn-icon lg-theme" onclick="toggleTema()" aria-label="Cambiar tema"><i class="fa-solid fa-moon js-tema-icon"></i></button>
@@ -59,7 +61,7 @@
 
     <form id="fAdmin" class="lg-form" novalidate>
       <h2 class="lg-title">Zona de control</h2><p class="t-m small mb-3">Administradores y empleados. <span id="ayudaAdmin">Ingresa con tu correo y contraseña.</span></p>
-      <div class="lg-field"><label for="aUser">Usuario</label><i class="fa-solid fa-id-badge ic"></i><input id="aUser" autocomplete="username" placeholder="admin o admin@elitesport.com" maxlength="60"></div>
+      <div class="lg-field"><label for="aUser">Correo del personal</label><i class="fa-solid fa-id-badge ic"></i><input id="aUser" autocomplete="username" placeholder="Correo del personal" maxlength="60"></div>
       <div class="lg-field"><label for="aPass">Contraseña</label><i class="fa-solid fa-key ic"></i><input id="aPass" type="password" autocomplete="current-password" placeholder="Contraseña" maxlength="40"><button type="button" class="js-eye" aria-label="Mostrar contraseña"><i class="fa-solid fa-eye"></i></button></div>
       <button type="submit" class="lg-cta">Entrar al panel</button>
     </form>
@@ -230,7 +232,7 @@
 <a href="#" class="menu-item" data-vista="usuarios" data-roles="admin"><i class="fa-solid fa-users"></i>Usuarios y roles</a>
 <a href="#" class="menu-item" data-vista="marca" data-roles="admin"><i class="fa-solid fa-palette"></i>Marca y tienda</a>
 <a href="#" class="menu-item" data-vista="pagos" data-roles="admin"><i class="fa-solid fa-qrcode"></i>Pagos (QR)</a>
-<a href="#" class="menu-item" data-vista="avances" data-roles="admin"><i class="fa-solid fa-graduation-cap"></i>Avances</a>
+<a href="#" class="menu-item" data-vista="avances" data-roles="admin" hidden><i class="fa-solid fa-graduation-cap"></i>Avances</a>
 <a href="#" class="menu-item" data-vista="config" data-roles="admin"><i class="fa-solid fa-gear"></i>Sistema</a>
 </template>
 
@@ -266,7 +268,7 @@
 
  <section id="vista-carrusel" class="app-view"><h4 class="sec-title"><i class="fa-solid fa-images"></i> Carrusel de portada</h4>
   <div class="row g-4"><div class="col-lg-6"><form id="formCarrusel" class="glass-card p-4" novalidate><h6 class="fw-bold mb-3">Agregar slide</h6>
-    <div class="mb-3"><span class="form-label d-block">Imagen del slide</span><div class="dropzone mb-2" id="zonaSlide" role="button" tabindex="0"><i class="fa-solid fa-cloud-arrow-up"></i><span>Sube una imagen horizontal desde tu equipo</span><input type="file" id="cArchivo" accept="image/*" class="d-none"></div><input id="cUrl" class="form-control campo mb-2" placeholder="o enlace de Dropbox / https" autocomplete="off" aria-label="Enlace de la imagen"><div class="prev-box" id="cPreview" style="height:90px">Vista previa</div></div>
+    <div class="mb-3"><span class="form-label d-block">Imagen del slide</span><div class="dropzone mb-2" id="zonaSlide" role="button" tabindex="0"><i class="fa-solid fa-cloud-arrow-up"></i><span>Sube una imagen horizontal desde tu equipo</span><input type="file" id="cArchivo" accept="image/*" class="d-none"></div><input id="cUrl" class="form-control campo mb-2" placeholder="o enlace de Dropbox / https" autocomplete="off" aria-label="Enlace de la imagen"><div class="prev-box" id="cPreview" style="height:90px">Vista previa</div></div><div class="mb-3"><label class="form-label" for="cVideoArchivo">Vídeo del slide (opcional, MP4/WEBM · máximo 30 MB)</label><input type="file" id="cVideoArchivo" class="form-control campo" accept="video/mp4,video/webm"><div id="cVideoPreview" class="small t-m mt-2" aria-live="polite"></div></div>
     <div class="row g-2 mb-3"><div class="col-8"><label class="form-label" for="cTitulo">Título</label><input id="cTitulo" class="form-control campo"></div><div class="col-4"><label class="form-label" for="cBadge">Etiqueta</label><input id="cBadge" class="form-control campo" placeholder="OFERTA"></div></div>
     <div class="mb-3"><label class="form-label" for="cTexto">Texto</label><input id="cTexto" class="form-control campo"></div><button type="submit" class="btn btn-neon w-100">Agregar slide</button></form></div>
    <div class="col-lg-6"><div class="glass-card p-4"><h6 class="fw-bold mb-2">Slides actuales</h6><div id="listaCarrusel"></div></div></div></div></section>
@@ -282,7 +284,7 @@
 
  <!-- ===== EMPLEADO + ADMIN: pedidos y pagos ===== -->
  <section id="vista-pedidos" class="app-view"><div class="d-flex flex-wrap gap-2 align-items-center mb-3"><h4 class="sec-title flex-grow-1 mb-0"><i class="fa-solid fa-receipt"></i> Pedidos y pagos</h4>
-   <select id="pedFiltro" class="form-select campo w-auto" aria-label="Filtrar por estado"><option value="todos">Todos</option><option value="pendiente_pago">Pendientes de pago</option><option value="pagado">Pagados</option><option value="enviado">Enviados</option><option value="entregado">Entregados</option><option value="cancelado">Cancelados</option></select>
+   <select id="pedFiltro" class="form-select campo w-auto" aria-label="Filtrar por estado"><option value="todos">Todos</option><option value="pendiente_pago">Pendientes de pago</option><option value="pago_parcial">Saldo en efectivo</option><option value="coordinacion">Coordinar WhatsApp</option><option value="pagado">Pagados</option><option value="enviado">Enviados</option><option value="entregado">Entregados</option><option value="cancelado">Cancelados</option></select>
    <input id="pedBuscar" class="form-control campo w-auto" placeholder="Cliente o #pedido" aria-label="Buscar pedido"><button type="button" class="btn btn-ghost btn-sm" id="btnRecargarPedidos"><i class="fa-solid fa-rotate me-1"></i>Actualizar</button></div>
   <div class="glass-card p-3"><p class="small t-m mb-2" id="pedInfo">Cargando…</p><div class="table-responsive"><table class="table align-middle mb-0 tabla-panel"><caption class="visually-hidden">Pedidos</caption><thead><tr><th scope="col">#</th><th scope="col">Fecha</th><th scope="col">Cliente</th><th scope="col">Detalle</th><th scope="col">A pagar</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr></thead><tbody id="tablaPedidos"></tbody></table></div></div></section>
 
@@ -328,12 +330,12 @@
     <div class="row g-2 mb-3 align-items-end"><div class="col-6"><label class="form-label" for="pMinutos">Minutos para pagar</label><input type="number" id="pMinutos" class="form-control campo" min="5" max="120"></div>
       <div class="col-6"><div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="pCentavos"><label class="form-check-label" for="pCentavos">Monto único con centavos</label></div></div></div>
     <button type="submit" class="btn btn-neon w-100">GUARDAR CONFIGURACIÓN DE PAGOS</button></form></div>
-   <div class="col-lg-6"><div class="glass-card p-4 mb-3"><h6 class="fw-bold mb-2"><i class="fa-solid fa-bolt t-g me-2"></i>Validación automática</h6>
-     <p class="small t-m mb-2">Cada pedido genera un <b>monto único</b> (ej. Bs 350,37). Cuando tu app <b>Listening</b> lee la notificación del banco y la inserta en la tabla <code>pagos_recibidos</code> (con el usuario <code>sistema@elitesport.com</code>), la base de datos busca el pedido con ese monto exacto y lo marca <b>pagado al instante</b>; el cliente lo ve en su pantalla en segundos y el stock se descuenta solo.</p>
-     <p class="small t-m mb-0">Si el pago no llega solo, el cliente puede subir su comprobante y un empleado lo confirma en «Pedidos y pagos».</p></div>
+   <div class="col-lg-6"><div class="glass-card p-4 mb-3"><h6 class="fw-bold mb-2"><i class="fa-solid fa-bolt t-g me-2"></i>Validación de transferencias</h6>
+      <p class="small t-m mb-2">El QR es independiente de las fotos del catálogo. La confirmación automática requiere un webhook confiable del banco/proveedor, configurado en servidor. La base de datos concilia el importe exacto y evita reutilizar el mismo identificador de transacción.</p>
+      <p class="small t-m mb-0">Si tu banco no ofrece webhook, el cliente puede subir su comprobante y el personal debe verificar el abono en la cuenta bancaria antes de confirmar el pago.</p></div>
     <div class="glass-card p-4"><div class="d-flex justify-content-between mb-2"><h6 class="fw-bold mb-0">Últimos pagos detectados</h6><button type="button" class="btn btn-ghost btn-sm" id="btnRecargarPagos" aria-label="Actualizar pagos"><i class="fa-solid fa-rotate"></i></button></div><div id="listaPagosRecibidos" class="small"></div></div></div></div></section>
 
- <section id="vista-avances" class="app-view"><h4 class="sec-title"><i class="fa-solid fa-graduation-cap"></i> Avances del curso (semanas 1 a 3)</h4>
+ <section id="vista-avances" class="app-view" hidden><h4 class="sec-title"><i class="fa-solid fa-graduation-cap"></i> Avances del curso (semanas 1 a 3)</h4>
   <p class="t-m">Cada avance funciona <b>solo</b> (abre su propia página) y además está <b>integrado</b> en este sistema. Enlace base de tu sitio: <code id="avBase"></code></p><div id="gridAvances"></div></section>
 
  <section id="vista-config" class="app-view"><h4 class="sec-title"><i class="fa-solid fa-gear"></i> Sistema</h4>
@@ -354,7 +356,7 @@
   <div id="panelCalidad" class="calidad__panel" hidden>
     <h2 class="calidad__titulo">Accesibilidad y calidad</h2>
     <button type="button" id="btnSimularContraste" class="btn btn-ghost btn-sm w-100 mb-2" aria-pressed="false">Simular alto contraste</button>
-    <button type="button" id="btnLigero" class="btn btn-ghost btn-sm w-100 mb-2" aria-pressed="false">Modo ligero</button>
+    <button type="button" id="btnAnimaciones" class="btn btn-ghost btn-sm w-100 mb-2" aria-pressed="false">Animaciones: ON/OFF</button>
     <button type="button" id="btnAuditarA11Y" class="btn btn-ghost btn-sm w-100">Verificar semántica HTML5 (sin recarga)</button>
     <p id="reporteA11Y" class="calidad__salida" role="status" aria-live="polite">Estado: listo para auditar.</p>
     <button type="button" id="btnSmokeTest" class="btn btn-ghost btn-sm w-100">Ejecutar Smoke Test DOM</button>

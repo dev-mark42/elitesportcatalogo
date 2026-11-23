@@ -1,7 +1,7 @@
 // Service Worker de Elite Sport (un solo proyecto, raíz del repositorio; rutas relativas para GitHub Pages).
 // HTML y JS/CSS propios: red primero con respaldo en caché (siempre ves lo último y funciona offline).
 // Imágenes y recursos externos: caché primero.
-const V = 'elite-sport-v7';
+const V = 'elite-sport-v8';
 const SHELL = [
  "assets/data/productos.json",
  "assets/img/icon-192.png",
@@ -69,6 +69,7 @@ self.addEventListener('fetch', e => {
   const r = e.request;
   if (r.method !== 'GET') return;
   const u = new URL(r.url), mismo = u.origin === location.origin;
+  if (/\.(mp4|webm|mov)(?:$|\?)/i.test(u.pathname)) { e.respondWith(fetch(r)); return; }
   if (u.hostname.endsWith('supabase.co')) return;            // la base de datos nunca se cachea
   if (!mismo || /\.(png|jpe?g|webp|svg|woff2?)$/i.test(u.pathname)) {   // imágenes y CDN: caché primero
     e.respondWith(caches.match(r).then(c => c || fetch(r).then(res => { if (res.ok || res.type === 'opaque') { const cp = res.clone(); caches.open(V).then(ch => ch.put(r, cp)); } return res; }).catch(() => c || Response.error())));

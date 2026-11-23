@@ -1,0 +1,31 @@
+/* Avance (Semana 3 · Mobile-first, Grid y Flexbox). Se carga DESPUÉS de main.css.
+   Regla de oro: un solo HTML; el CSS reacomoda según ancho y orientación. */
+
+/* Celular girado (horizontal): el dock pasa de abajo a una barra lateral con Flexbox */
+@media (orientation: landscape) and (max-height: 520px) and (max-width: 991.98px) {
+  .bottom-nav { top: 62px; bottom: 0; right: auto; left: 0; width: 76px; height: auto; flex-direction: column; justify-content: flex-start; gap: 6px; border-top: 0; border-right: 1px solid var(--border); padding: 8px 0; }
+  .bottom-nav a { flex: 0 0 auto; padding: 10px 0; }
+  .bottom-nav a.active::before { top: 20%; left: 0; width: 3px; height: 40px; border-radius: 0 6px 6px 0; }
+  main.contenido { padding-left: 76px; padding-bottom: 20px; }
+}
+/* Laptop: sin funciones de scroll (sin barra de progreso, sin scroll suave, sin aparición diferida) y rejilla compacta */
+html[data-dispositivo="laptop"] { scroll-behavior: auto; }
+html[data-dispositivo="laptop"] .scroll-bar { display: none; }
+html[data-dispositivo="laptop"] .reveal { opacity: 1; transform: none; transition: none; }
+.paginador { display: none; }
+html[data-dispositivo="laptop"] .paginador { display: flex; justify-content: center; align-items: center; gap: 14px; margin: 20px 0 6px; }
+/* Táctil: botones cómodos de pulsar */
+html[data-tactil="true"] .chip, html[data-tactil="true"] .talla-opt { min-height: 44px; }
+
+/* Celular y tablet: scroll táctil fluido (se apagan los efectos que trababan el desplazamiento) */
+html[data-dispositivo="movil"] .bg-pitch, html[data-dispositivo="tablet"] .bg-pitch,
+html[data-dispositivo="movil"] .bg-stadium, html[data-dispositivo="tablet"] .bg-stadium,
+html[data-dispositivo="movil"] .bg-beams i, html[data-dispositivo="tablet"] .bg-beams i { animation: none; }
+html[data-dispositivo="movil"] .bg-dust, html[data-dispositivo="tablet"] .bg-dust,
+html[data-dispositivo="movil"] .bg-roll, html[data-dispositivo="tablet"] .bg-roll { display: none; }
+html[data-dispositivo="movil"] .glass-card, html[data-dispositivo="tablet"] .glass-card,
+html[data-dispositivo="movil"] .p-card, html[data-dispositivo="tablet"] .p-card,
+html[data-dispositivo="movil"] .cat-card, html[data-dispositivo="tablet"] .cat-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
+html[data-tactil="true"] body { touch-action: pan-y pinch-zoom; }
+html[data-tactil="true"] .hero2 { touch-action: pan-y; }
+html[data-tactil="true"] .tilt { transform: none !important; }
