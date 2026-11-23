@@ -1,8 +1,9 @@
-// Pantalla de acceso: ingresar, registrarse y zona admin (conectada a Supabase o modo local)
-import { registrar, loginCliente, loginAdmin, entrarInvitado } from '../core/auth.js';
+// js/views/login.js
+import { registrar, loginCliente, loginAdmin, entrarInvitado, getRol } from '../core/auth.js';
 import { toast } from '../../semana1/05-alertas-toast/alertas.js';
 import { validarFormulario, validacionEnVivo, validarCampo, limpiarValidacion } from '../../semana1/04-validacion-formulario/validaciones.js';
 import { configurarDelegacionEventos as deleg } from '../../semana2/01-delegacion-eventos-hidratacion/delegacion-eventos.js';
+import { sb } from '../core/bd.js'; // Asegúrate de importar el cliente de Supabase
 
 const $ = id => document.getElementById(id);
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -19,15 +20,62 @@ function entrar(rol) {
     document.body.appendChild(w);
     setTimeout(() => { document.dispatchEvent(new CustomEvent('auth:cambio')); setTimeout(() => w.remove(), 700); }, 600);
 }
+
+// --- Nueva función para validar el rol y redirigir ---
+async function redirigirSegunRol() {
+    const cliente = await sb();
+    if (!cliente) {
+        toast('Error: No hay conexión con la base de datos.', 'error');
+        return;
+    }
+
+    // Obtener el usuario actual de Supabase Auth
+    const { data: { user }, error: authError } = await cliente.auth.getUser();
+    if (authError || !user) {
+        toast('Error: No se pudo verificar la sesión.', 'error');
+        return;
+    }
+
+    // Buscar su rol en la tabla 'perfiles'
+    const { data: perfil, error: perfilError } = await cliente
+        .from('perfiles')
+        .select('rol')
+        .eq('id', user.id)
+        .single();
+
+    if (perfilError) {
+        console.error('Error al leer perfiles:', perfilError);
+        // Este es el error que te salía en la captura
+        toast('Error de base de datos: ' + perfilError.message + ' (Revisa las políticas RLS en Supabase)', 'error');
+        return;
+    }
+
+    // Redirigir según el rol
+    if (perfil.rol === 'admin') {
+        window.location.href = '#/admin/ventas'; // O la ruta que uses para admin
+    } else if (perfil.rol === 'empleado') {
+        window.location.href = '#/admin/inventario'; // O la ruta para empleado
+    } else {
+        window.location.href = '#/tienda/inicio'; // O la ruta para cliente
+    }
+}
+
 async function enviar(form, reglas, accion) {
     if (!validarFormulario(form, reglas, toast)) return;
     const b = form.querySelector('.lg-cta'), t = b.textContent; b.disabled = true; b.textContent = 'Cargando...';
-    let r; try { r = await accion(); } catch (e) { r = { ok: false, msg: 'Error de conexión. Intenta de nuevo.' }; }
+    let r;
+    try { r = await accion(); }
+    catch (e) { r = { ok: false, msg: 'Error de conexión. Intenta de nuevo.' }; }
     b.disabled = false; b.textContent = t;
+
     if (r.ok && r.pendiente) { toast(r.msg, 'info'); document.querySelector('.lg-tab').click(); return; }
-    if (r.ok) return entrar(r.rol);
-    toast(r.msg, 'error');
-    form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake');
+    if (r.ok) {
+        // Si el login fue exitoso, validamos el rol con Supabase
+        await redirigirSegunRol();
+    } else {
+        toast(r.msg, 'error');
+        form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake');
+    }
 }
 
 export default function iniciarLogin() {
@@ -54,10 +102,10 @@ export default function iniciarLogin() {
     });
     $('fAdmin').addEventListener('submit', e => { e.preventDefault(); enviar(e.target, rA, () => loginAdmin($('aUser').value, $('aPass').value)); });
     $('btnInvitado').addEventListener('click', () => { entrarInvitado(); entrar('cliente'); });
-    $('cont').remove();   // la app ya entra sola si hay sesión vigente
+    $('cont').remove();
 
     return {
-        entrar() {   // cada vez que se muestra la pantalla de acceso (p. ej. tras cerrar sesión)
+        entrar() {
             ['fLogin', 'fReg', 'fAdmin'].forEach(id => { $(id).reset(); limpiarValidacion($(id)); });
             $('fuerza').style.width = '0';
         }
